@@ -1,0 +1,122 @@
+-- SERVICES
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+
+--------------------------------------------------
+-- GUI
+--------------------------------------------------
+
+local gui = Instance.new("ScreenGui")
+gui.Name = "SPIDROSHH OP SCRIPT"
+gui.ResetOnSpawn = false
+gui.Parent = playerGui
+
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(0,220,0,140)
+frame.Position = UDim2.new(0.5,-110,0.5,-70)
+frame.BackgroundColor3 = Color3.fromRGB(30,30,30)
+frame.Parent = gui
+
+--------------------------------------------------
+-- FREEZE BUTTON
+--------------------------------------------------
+
+local freezeButton = Instance.new("TextButton")
+freezeButton.Size = UDim2.new(0,180,0,35)
+freezeButton.Position = UDim2.new(0.5,-90,0,15)
+freezeButton.Text = "Freeze Trade"
+freezeButton.BackgroundColor3 = Color3.fromRGB(60,60,60)
+freezeButton.TextColor3 = Color3.new(1,1,1)
+freezeButton.Parent = frame
+
+--------------------------------------------------
+-- ACCEPT BUTTON
+--------------------------------------------------
+
+local acceptButton = Instance.new("TextButton")
+acceptButton.Size = UDim2.new(0,180,0,35)
+acceptButton.Position = UDim2.new(0.5,-90,0,60)
+acceptButton.Text = "Auto Accept Trade"
+acceptButton.BackgroundColor3 = Color3.fromRGB(60,60,60)
+acceptButton.TextColor3 = Color3.new(1,1,1)
+acceptButton.Parent = frame
+
+--------------------------------------------------
+-- TOGGLE SLIDER
+--------------------------------------------------
+
+local toggleFrame = Instance.new("Frame")
+toggleFrame.Size = UDim2.new(0,60,0,25)
+toggleFrame.Position = UDim2.new(0.5,-30,1,-35)
+toggleFrame.BackgroundColor3 = Color3.fromRGB(80,80,80)
+toggleFrame.Parent = frame
+
+local toggleButton = Instance.new("TextButton")
+toggleButton.Size = UDim2.new(0,25,0,25)
+toggleButton.Position = UDim2.new(0,0,0,0)
+toggleButton.Text = ""
+toggleButton.BackgroundColor3 = Color3.fromRGB(200,200,200)
+toggleButton.Parent = toggleFrame
+
+--------------------------------------------------
+-- NOTIFICATION
+--------------------------------------------------
+
+local notif = Instance.new("TextLabel")
+notif.Size = UDim2.new(0,250,0,40)
+notif.Position = UDim2.new(1,-260,1,-60)
+notif.BackgroundColor3 = Color3.fromRGB(25,25,25)
+notif.TextColor3 = Color3.new(1,1,1)
+notif.Text = ""
+notif.Visible = false
+notif.Parent = gui
+
+--------------------------------------------------
+-- LOGIC
+--------------------------------------------------
+
+local toggleOn = false
+local lastAction = ""
+
+local function updateNotif()
+	if toggleOn and lastAction ~= "" then
+		notif.Visible = true
+		notif.Text = lastAction .. " is ACTIVE"
+	else
+		notif.Visible = false
+	end
+end
+
+--------------------------------------------------
+-- TOGGLE SWITCH
+--------------------------------------------------
+
+toggleButton.MouseButton1Click:Connect(function()
+
+	toggleOn = not toggleOn
+
+	if toggleOn then
+		toggleButton.Position = UDim2.new(1,-25,0,0)
+		toggleFrame.BackgroundColor3 = Color3.fromRGB(0,170,0)
+	else
+		toggleButton.Position = UDim2.new(0,0,0,0)
+		toggleFrame.BackgroundColor3 = Color3.fromRGB(80,80,80)
+	end
+
+	updateNotif()
+end)
+
+--------------------------------------------------
+-- BUTTONS
+--------------------------------------------------
+
+freezeButton.MouseButton1Click:Connect(function()
+	lastAction = "Trade Freeze ✅"
+	updateNotif()
+end)
+
+acceptButton.MouseButton1Click:Connect(function()
+	lastAction = "Auto Accept ✅"
+	updateNotif()
+end)
