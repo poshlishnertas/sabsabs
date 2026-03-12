@@ -184,26 +184,24 @@ acceptButton.MouseButton1Click:Connect(function()
 end)
 
 --------------------------------------------------
--- FULL GUI DRAG SYSTEM
+-- DRAG SYSTEM (FIXED)
 --------------------------------------------------
 
 local dragging = false
 local dragStart
 local startPos
 
-frame.InputBegan:Connect(function(input)
+title.InputBegan:Connect(function(input)
 
 	if input.UserInputType == Enum.UserInputType.MouseButton1 then
-
 		dragging = true
 		dragStart = input.Position
 		startPos = frame.Position
-
 	end
 
 end)
 
-UserInputService.InputEnded:Connect(function(input)
+title.InputEnded:Connect(function(input)
 
 	if input.UserInputType == Enum.UserInputType.MouseButton1 then
 		dragging = false
