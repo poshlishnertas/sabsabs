@@ -1,5 +1,6 @@
 -- SERVICES
 local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
 
 local player = Players.LocalPlayer
@@ -10,104 +11,100 @@ local playerGui = player:WaitForChild("PlayerGui")
 --------------------------------------------------
 
 local gui = Instance.new("ScreenGui")
-gui.Name = "OP SCRIPT"
+gui.Name = "OP_SCRIPT"
 gui.ResetOnSpawn = false
 gui.Parent = playerGui
 
 local frame = Instance.new("Frame")
-frame.Size = UDim2.new(0,260,0,150)
-frame.Position = UDim2.new(0.5,-130,0.5,-75)
-frame.BackgroundColor3 = Color3.fromRGB(30,30,30)
+frame.Size = UDim2.new(0,280,0,160)
+frame.Position = UDim2.new(0.5,-140,0.5,-80)
+frame.BackgroundColor3 = Color3.fromRGB(28,28,28)
+frame.BorderSizePixel = 0
 frame.Parent = gui
 
+local frameCorner = Instance.new("UICorner", frame)
+frameCorner.CornerRadius = UDim.new(0,8)
+
 --------------------------------------------------
--- TITLE
+-- TITLE BAR (DRAG AREA)
 --------------------------------------------------
 
+local titleBar = Instance.new("Frame")
+titleBar.Size = UDim2.new(1,0,0,35)
+titleBar.BackgroundColor3 = Color3.fromRGB(20,20,20)
+titleBar.Parent = frame
+
+local titleCorner = Instance.new("UICorner", titleBar)
+titleCorner.CornerRadius = UDim.new(0,8)
+
 local title = Instance.new("TextLabel")
-title.Size = UDim2.new(1,0,0,30)
+title.Size = UDim2.new(1,0,1,0)
 title.BackgroundTransparency = 1
 title.Text = "OP SCRIPT"
 title.TextColor3 = Color3.new(1,1,1)
-title.TextScaled = true
-title.Parent = frame
+title.Font = Enum.Font.GothamBold
+title.TextSize = 16
+title.Parent = titleBar
 
 --------------------------------------------------
--- FREEZE BUTTON
+-- BUTTON CREATOR
 --------------------------------------------------
 
-local freezeButton = Instance.new("TextLabel")
-freezeButton.Size = UDim2.new(0,170,0,35)
-freezeButton.Position = UDim2.new(0,10,0,40)
-freezeButton.Text = "Freeze Trade"
-freezeButton.BackgroundColor3 = Color3.fromRGB(60,60,60)
-freezeButton.TextColor3 = Color3.new(1,1,1)
-freezeButton.Parent = frame
+local function createToggleButton(text, yPos)
+
+	local button = Instance.new("Frame")
+	button.Size = UDim2.new(1,-20,0,40)
+	button.Position = UDim2.new(0,10,0,yPos)
+	button.BackgroundColor3 = Color3.fromRGB(40,40,40)
+	button.Parent = frame
+
+	local corner = Instance.new("UICorner", button)
+	corner.CornerRadius = UDim.new(0,6)
+
+	local label = Instance.new("TextLabel")
+	label.BackgroundTransparency = 1
+	label.Size = UDim2.new(1,-70,1,0)
+	label.Position = UDim2.new(0,10,0,0)
+	label.Text = text
+	label.Font = Enum.Font.Gotham
+	label.TextColor3 = Color3.new(1,1,1)
+	label.TextSize = 14
+	label.TextXAlignment = Enum.TextXAlignment.Left
+	label.Parent = button
+
+	-- toggle background
+	local toggleFrame = Instance.new("Frame")
+	toggleFrame.Size = UDim2.new(0,45,0,22)
+	toggleFrame.Position = UDim2.new(1,-55,0.5,-11)
+	toggleFrame.BackgroundColor3 = Color3.fromRGB(80,80,80)
+	toggleFrame.Parent = button
+
+	local toggleCorner = Instance.new("UICorner", toggleFrame)
+	toggleCorner.CornerRadius = UDim.new(1,0)
+
+	-- toggle circle
+	local toggle = Instance.new("Frame")
+	toggle.Size = UDim2.new(0,18,0,18)
+	toggle.Position = UDim2.new(0,2,0.5,-9)
+	toggle.BackgroundColor3 = Color3.fromRGB(220,220,220)
+	toggle.Parent = toggleFrame
+
+	local circleCorner = Instance.new("UICorner", toggle)
+	circleCorner.CornerRadius = UDim.new(1,0)
+
+	return button, toggleFrame, toggle
+
+end
 
 --------------------------------------------------
--- FREEZE TOGGLE
+-- CREATE BUTTONS
 --------------------------------------------------
 
-local freezeToggleFrame = Instance.new("Frame")
-freezeToggleFrame.Size = UDim2.new(0,50,0,25)
-freezeToggleFrame.Position = UDim2.new(1,-60,0,45)
-freezeToggleFrame.BackgroundColor3 = Color3.fromRGB(80,80,80)
-freezeToggleFrame.Parent = frame
-
-local freezeCorner = Instance.new("UICorner")
-freezeCorner.CornerRadius = UDim.new(1,0)
-freezeCorner.Parent = freezeToggleFrame
-
-local freezeToggle = Instance.new("TextButton")
-freezeToggle.Size = UDim2.new(0,23,0,23)
-freezeToggle.Position = UDim2.new(0,1,0,1)
-freezeToggle.Text = ""
-freezeToggle.BackgroundColor3 = Color3.fromRGB(220,220,220)
-freezeToggle.Parent = freezeToggleFrame
-
-local freezeToggleCorner = Instance.new("UICorner")
-freezeToggleCorner.CornerRadius = UDim.new(1,0)
-freezeToggleCorner.Parent = freezeToggle
+local freezeButton, freezeToggleFrame, freezeToggle = createToggleButton("Freeze Trade",50)
+local acceptButton, acceptToggleFrame, acceptToggle = createToggleButton("Auto Accept",100)
 
 --------------------------------------------------
--- ACCEPT BUTTON
---------------------------------------------------
-
-local acceptButton = Instance.new("TextLabel")
-acceptButton.Size = UDim2.new(0,170,0,35)
-acceptButton.Position = UDim2.new(0,10,0,85)
-acceptButton.Text = "Auto Accept"
-acceptButton.BackgroundColor3 = Color3.fromRGB(60,60,60)
-acceptButton.TextColor3 = Color3.new(1,1,1)
-acceptButton.Parent = frame
-
---------------------------------------------------
--- ACCEPT TOGGLE
---------------------------------------------------
-
-local acceptToggleFrame = Instance.new("Frame")
-acceptToggleFrame.Size = UDim2.new(0,50,0,25)
-acceptToggleFrame.Position = UDim2.new(1,-60,0,90)
-acceptToggleFrame.BackgroundColor3 = Color3.fromRGB(80,80,80)
-acceptToggleFrame.Parent = frame
-
-local acceptCorner = Instance.new("UICorner")
-acceptCorner.CornerRadius = UDim.new(1,0)
-acceptCorner.Parent = acceptToggleFrame
-
-local acceptToggle = Instance.new("TextButton")
-acceptToggle.Size = UDim2.new(0,23,0,23)
-acceptToggle.Position = UDim2.new(0,1,0,1)
-acceptToggle.Text = ""
-acceptToggle.BackgroundColor3 = Color3.fromRGB(220,220,220)
-acceptToggle.Parent = acceptToggleFrame
-
-local acceptToggleCorner = Instance.new("UICorner")
-acceptToggleCorner.CornerRadius = UDim.new(1,0)
-acceptToggleCorner.Parent = acceptToggle
-
---------------------------------------------------
--- NOTIFICATION FUNCTION
+-- NOTIFICATION SPAM
 --------------------------------------------------
 
 local function spamNotification(text)
@@ -119,14 +116,13 @@ local function spamNotification(text)
 			local notif = Instance.new("TextLabel")
 			notif.Size = UDim2.new(0,240,0,35)
 			notif.Position = UDim2.new(1,-250,1,-60)
-			notif.BackgroundColor3 = Color3.fromRGB(20,20,20)
+			notif.BackgroundColor3 = Color3.fromRGB(25,25,25)
 			notif.TextColor3 = Color3.new(1,1,1)
 			notif.Text = text
 			notif.Parent = gui
 
-			local corner = Instance.new("UICorner")
+			local corner = Instance.new("UICorner", notif)
 			corner.CornerRadius = UDim.new(0,6)
-			corner.Parent = notif
 
 			task.wait(1)
 
@@ -137,91 +133,104 @@ local function spamNotification(text)
 end
 
 --------------------------------------------------
--- TOGGLE STATES
+-- TOGGLE LOGIC
 --------------------------------------------------
 
 local freezeOn = false
 local acceptOn = false
 
---------------------------------------------------
--- FREEZE TOGGLE LOGIC
---------------------------------------------------
+freezeButton.InputBegan:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 then
 
-freezeToggle.MouseButton1Click:Connect(function()
+		freezeOn = not freezeOn
 
-	freezeOn = not freezeOn
+		if freezeOn then
 
-	if freezeOn then
-		freezeToggle.Position = UDim2.new(1,-24,0,1)
-		freezeToggleFrame.BackgroundColor3 = Color3.fromRGB(0,170,0)
-		spamNotification("Trade Freeze ✅")
-	else
-		freezeToggle.Position = UDim2.new(0,1,0,1)
-		freezeToggleFrame.BackgroundColor3 = Color3.fromRGB(80,80,80)
+			TweenService:Create(freezeToggle,TweenInfo.new(.2),{
+				Position = UDim2.new(1,-20,0.5,-9)
+			}):Play()
+
+			freezeToggleFrame.BackgroundColor3 = Color3.fromRGB(0,170,0)
+			spamNotification("Trade Freeze ✅")
+
+		else
+
+			TweenService:Create(freezeToggle,TweenInfo.new(.2),{
+				Position = UDim2.new(0,2,0.5,-9)
+			}):Play()
+
+			freezeToggleFrame.BackgroundColor3 = Color3.fromRGB(80,80,80)
+
+		end
 	end
+end)
 
+acceptButton.InputBegan:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 then
+
+		acceptOn = not acceptOn
+
+		if acceptOn then
+
+			TweenService:Create(acceptToggle,TweenInfo.new(.2),{
+				Position = UDim2.new(1,-20,0.5,-9)
+			}):Play()
+
+			acceptToggleFrame.BackgroundColor3 = Color3.fromRGB(0,170,0)
+			spamNotification("Auto Accept ✅")
+
+		else
+
+			TweenService:Create(acceptToggle,TweenInfo.new(.2),{
+				Position = UDim2.new(0,2,0.5,-9)
+			}):Play()
+
+			acceptToggleFrame.BackgroundColor3 = Color3.fromRGB(80,80,80)
+
+		end
+	end
 end)
 
 --------------------------------------------------
--- ACCEPT TOGGLE LOGIC
---------------------------------------------------
-
-acceptToggle.MouseButton1Click:Connect(function()
-
-	acceptOn = not acceptOn
-
-	if acceptOn then
-		acceptToggle.Position = UDim2.new(1,-24,0,1)
-		acceptToggleFrame.BackgroundColor3 = Color3.fromRGB(0,170,0)
-		spamNotification("Auto Accept ✅")
-	else
-		acceptToggle.Position = UDim2.new(0,1,0,1)
-		acceptToggleFrame.BackgroundColor3 = Color3.fromRGB(80,80,80)
-	end
-
-end)
-
---------------------------------------------------
--- DRAGGABLE GUI
+-- DRAGGABLE GUI (FIXED)
 --------------------------------------------------
 
 local dragging = false
-local dragInput
 local dragStart
 local startPos
 
-local function update(input)
-	local delta = input.Position - dragStart
-	frame.Position = UDim2.new(
-		startPos.X.Scale,
-		startPos.X.Offset + delta.X,
-		startPos.Y.Scale,
-		startPos.Y.Offset + delta.Y
-	)
-end
+titleBar.InputBegan:Connect(function(input)
 
-frame.InputBegan:Connect(function(input)
 	if input.UserInputType == Enum.UserInputType.MouseButton1 then
+
 		dragging = true
 		dragStart = input.Position
 		startPos = frame.Position
 
 		input.Changed:Connect(function()
+
 			if input.UserInputState == Enum.UserInputState.End then
 				dragging = false
 			end
-		end)
-	end
-end)
 
-frame.InputChanged:Connect(function(input)
-	if input.UserInputType == Enum.UserInputType.MouseMovement then
-		dragInput = input
+		end)
+
 	end
 end)
 
 UserInputService.InputChanged:Connect(function(input)
-	if input == dragInput and dragging then
-		update(input)
+
+	if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+
+		local delta = input.Position - dragStart
+
+		frame.Position = UDim2.new(
+			startPos.X.Scale,
+			startPos.X.Offset + delta.X,
+			startPos.Y.Scale,
+			startPos.Y.Offset + delta.Y
+		)
+
 	end
+
 end)
