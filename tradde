@@ -25,24 +25,19 @@ frame.Parent = gui
 Instance.new("UICorner",frame).CornerRadius = UDim.new(0,8)
 
 --------------------------------------------------
--- TITLE BAR (DRAG AREA)
+-- TITLE
 --------------------------------------------------
 
-local titleBar = Instance.new("Frame")
-titleBar.Size = UDim2.new(1,0,0,35)
-titleBar.BackgroundColor3 = Color3.fromRGB(20,20,20)
-titleBar.Parent = frame
-
-Instance.new("UICorner",titleBar).CornerRadius = UDim.new(0,8)
-
 local title = Instance.new("TextLabel")
-title.Size = UDim2.new(1,0,1,0)
-title.BackgroundTransparency = 1
+title.Size = UDim2.new(1,0,0,35)
+title.BackgroundColor3 = Color3.fromRGB(20,20,20)
 title.Text = "OP SCRIPT"
 title.TextColor3 = Color3.new(1,1,1)
 title.Font = Enum.Font.GothamBold
 title.TextSize = 16
-title.Parent = titleBar
+title.Parent = frame
+
+Instance.new("UICorner",title).CornerRadius = UDim.new(0,8)
 
 --------------------------------------------------
 -- BUTTON CREATOR
@@ -98,14 +93,14 @@ local freezeButton,freezeToggleFrame,freezeToggle = createToggleButton("Freeze T
 local acceptButton,acceptToggleFrame,acceptToggle = createToggleButton("Auto Accept",100)
 
 --------------------------------------------------
--- NOTIFICATION SPAM
+-- NOTIFICATIONS
 --------------------------------------------------
 
-local function spamNotification(text)
+local function startNotificationLoop(text,state)
 
 	task.spawn(function()
 
-		while true do
+		while state() do
 
 			local notif = Instance.new("TextLabel")
 			notif.Size = UDim2.new(0,240,0,35)
@@ -144,7 +139,9 @@ freezeButton.MouseButton1Click:Connect(function()
 
 		freezeToggleFrame.BackgroundColor3 = Color3.fromRGB(0,170,0)
 
-		spamNotification("Trade Freeze ✅")
+		startNotificationLoop("Trade Freeze ✅",function()
+			return freezeOn
+		end)
 
 	else
 
@@ -170,7 +167,9 @@ acceptButton.MouseButton1Click:Connect(function()
 
 		acceptToggleFrame.BackgroundColor3 = Color3.fromRGB(0,170,0)
 
-		spamNotification("Auto Accept ✅")
+		startNotificationLoop("Auto Accept ✅",function()
+			return acceptOn
+		end)
 
 	else
 
@@ -185,14 +184,14 @@ acceptButton.MouseButton1Click:Connect(function()
 end)
 
 --------------------------------------------------
--- DRAGGABLE GUI (FULLY FIXED)
+-- FULL GUI DRAG SYSTEM
 --------------------------------------------------
 
 local dragging = false
 local dragStart
 local startPos
 
-titleBar.InputBegan:Connect(function(input)
+frame.InputBegan:Connect(function(input)
 
 	if input.UserInputType == Enum.UserInputType.MouseButton1 then
 
