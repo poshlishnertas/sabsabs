@@ -1,0 +1,78 @@
+-- SERVICES
+local Players = game:GetService("Players")
+
+local player = Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+
+--------------------------------------------------
+-- GUI
+--------------------------------------------------
+
+local gui = Instance.new("ScreenGui")
+gui.Name = "OP_SCRIPT"
+gui.ResetOnSpawn = false
+gui.Parent = playerGui
+
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(0,280,0,120)
+frame.Position = UDim2.new(0.5,-140,0.5,-60)
+frame.BackgroundColor3 = Color3.fromRGB(28,28,28)
+frame.BorderSizePixel = 0
+frame.Parent = gui
+
+Instance.new("UICorner",frame).CornerRadius = UDim.new(0,8)
+
+--------------------------------------------------
+-- TITLE
+--------------------------------------------------
+
+local title = Instance.new("TextLabel")
+title.Size = UDim2.new(1,0,0,35)
+title.BackgroundColor3 = Color3.fromRGB(20,20,20)
+title.Text = "OP SCRIPT"
+title.TextColor3 = Color3.new(1,1,1)
+title.Font = Enum.Font.GothamBold
+title.TextSize = 16
+title.Parent = frame
+
+Instance.new("UICorner",title).CornerRadius = UDim.new(0,8)
+
+--------------------------------------------------
+-- LOADING TEXT
+--------------------------------------------------
+
+local loadingText = Instance.new("TextLabel")
+loadingText.Size = UDim2.new(1,0,1,-35)
+loadingText.Position = UDim2.new(0,0,0,35)
+loadingText.BackgroundTransparency = 1
+loadingText.Text = "Loading..."
+loadingText.TextColor3 = Color3.new(1,1,1)
+loadingText.Font = Enum.Font.Gotham
+loadingText.TextSize = 16
+loadingText.Parent = frame
+
+--------------------------------------------------
+-- LOADING FUNCTION
+--------------------------------------------------
+
+task.spawn(function()
+
+	local dots = {"Loading.", "Loading..", "Loading..."}
+	local index = 1
+
+	for i = 1,80 do -- 80 seconds = 1:20
+
+		loadingText.Text = dots[index]
+		index += 1
+
+		if index > #dots then
+			index = 1
+		end
+
+		task.wait(1)
+
+	end
+
+	loadingText.Text = "Script failed to load."
+
+end)
