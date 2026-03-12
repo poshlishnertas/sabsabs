@@ -184,44 +184,51 @@ acceptButton.MouseButton1Click:Connect(function()
 end)
 
 --------------------------------------------------
--- DRAG SYSTEM (100% WORKING)
+-- DRAG SYSTEM (FIXED)
 --------------------------------------------------
 
-local dragToggle = nil
-local dragSpeed = 0.15
-local dragStart = nil
-local startPos = nil
+local dragging = false
+local dragInput
+local dragStart
+local startPos
 
-local function updateInput(input)
+local function update(input)
 	local delta = input.Position - dragStart
-	local position = UDim2.new(
+
+	frame.Position = UDim2.new(
 		startPos.X.Scale,
 		startPos.X.Offset + delta.X,
 		startPos.Y.Scale,
 		startPos.Y.Offset + delta.Y
 	)
-
-	frame.Position = position
 end
 
 title.InputBegan:Connect(function(input)
-	if input.UserInputType == Enum.UserInputType.MouseButton1 then
-		dragToggle = true
+	if input.UserInputType == Enum.UserInputType.MouseButton1 
+	or input.UserInputType == Enum.UserInputType.Touch then
+		
+		dragging = true
 		dragStart = input.Position
 		startPos = frame.Position
 
 		input.Changed:Connect(function()
 			if input.UserInputState == Enum.UserInputState.End then
-				dragToggle = false
+				dragging = false
 			end
 		end)
 	end
 end)
 
+title.InputChanged:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseMovement 
+	or input.UserInputType == Enum.UserInputType.Touch then
+		
+		dragInput = input
+	end
+end)
+
 UserInputService.InputChanged:Connect(function(input)
-	if input.UserInputType == Enum.UserInputType.MouseMovement then
-		if dragToggle then
-			updateInput(input)
-		end
+	if input == dragInput and dragging then
+		update(input)
 	end
 end)
