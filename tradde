@@ -90,7 +90,7 @@ end
 --------------------------------------------------
 
 local freezeButton,freezeToggleFrame,freezeToggle = createToggleButton("Freeze Trade",50)
-local acceptButton,acceptToggleFrame,acceptToggle = createToggleButton("Auto Accept",100)
+local acceptButton,acceptToggleFrame,acceptToggle = createToggleButton("Auto Accept Trade",100)
 
 --------------------------------------------------
 -- NOTIFICATIONS
@@ -167,7 +167,7 @@ acceptButton.MouseButton1Click:Connect(function()
 
 		acceptToggleFrame.BackgroundColor3 = Color3.fromRGB(0,170,0)
 
-		startNotificationLoop("Auto Accept ✅",function()
+		startNotificationLoop("Auto Accept Trade ✅",function()
 			return acceptOn
 		end)
 
