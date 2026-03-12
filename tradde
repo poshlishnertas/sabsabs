@@ -1,5 +1,7 @@
 -- SERVICES
 local Players = game:GetService("Players")
+local UserInputService = game:GetService("UserInputService")
+
 local player = Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
 
@@ -8,115 +10,218 @@ local playerGui = player:WaitForChild("PlayerGui")
 --------------------------------------------------
 
 local gui = Instance.new("ScreenGui")
-gui.Name = "SPIDROSHH OP SCRIPT"
+gui.Name = "OP SCRIPT"
 gui.ResetOnSpawn = false
 gui.Parent = playerGui
 
 local frame = Instance.new("Frame")
-frame.Size = UDim2.new(0,220,0,140)
-frame.Position = UDim2.new(0.5,-110,0.5,-70)
+frame.Size = UDim2.new(0,260,0,150)
+frame.Position = UDim2.new(0.5,-130,0.5,-75)
 frame.BackgroundColor3 = Color3.fromRGB(30,30,30)
 frame.Parent = gui
+
+--------------------------------------------------
+-- TITLE
+--------------------------------------------------
+
+local title = Instance.new("TextLabel")
+title.Size = UDim2.new(1,0,0,30)
+title.BackgroundTransparency = 1
+title.Text = "OP SCRIPT"
+title.TextColor3 = Color3.new(1,1,1)
+title.TextScaled = true
+title.Parent = frame
 
 --------------------------------------------------
 -- FREEZE BUTTON
 --------------------------------------------------
 
-local freezeButton = Instance.new("TextButton")
-freezeButton.Size = UDim2.new(0,180,0,35)
-freezeButton.Position = UDim2.new(0.5,-90,0,15)
+local freezeButton = Instance.new("TextLabel")
+freezeButton.Size = UDim2.new(0,170,0,35)
+freezeButton.Position = UDim2.new(0,10,0,40)
 freezeButton.Text = "Freeze Trade"
 freezeButton.BackgroundColor3 = Color3.fromRGB(60,60,60)
 freezeButton.TextColor3 = Color3.new(1,1,1)
 freezeButton.Parent = frame
 
 --------------------------------------------------
+-- FREEZE TOGGLE
+--------------------------------------------------
+
+local freezeToggleFrame = Instance.new("Frame")
+freezeToggleFrame.Size = UDim2.new(0,50,0,25)
+freezeToggleFrame.Position = UDim2.new(1,-60,0,45)
+freezeToggleFrame.BackgroundColor3 = Color3.fromRGB(80,80,80)
+freezeToggleFrame.Parent = frame
+
+local freezeCorner = Instance.new("UICorner")
+freezeCorner.CornerRadius = UDim.new(1,0)
+freezeCorner.Parent = freezeToggleFrame
+
+local freezeToggle = Instance.new("TextButton")
+freezeToggle.Size = UDim2.new(0,23,0,23)
+freezeToggle.Position = UDim2.new(0,1,0,1)
+freezeToggle.Text = ""
+freezeToggle.BackgroundColor3 = Color3.fromRGB(220,220,220)
+freezeToggle.Parent = freezeToggleFrame
+
+local freezeToggleCorner = Instance.new("UICorner")
+freezeToggleCorner.CornerRadius = UDim.new(1,0)
+freezeToggleCorner.Parent = freezeToggle
+
+--------------------------------------------------
 -- ACCEPT BUTTON
 --------------------------------------------------
 
-local acceptButton = Instance.new("TextButton")
-acceptButton.Size = UDim2.new(0,180,0,35)
-acceptButton.Position = UDim2.new(0.5,-90,0,60)
-acceptButton.Text = "Auto Accept Trade"
+local acceptButton = Instance.new("TextLabel")
+acceptButton.Size = UDim2.new(0,170,0,35)
+acceptButton.Position = UDim2.new(0,10,0,85)
+acceptButton.Text = "Auto Accept"
 acceptButton.BackgroundColor3 = Color3.fromRGB(60,60,60)
 acceptButton.TextColor3 = Color3.new(1,1,1)
 acceptButton.Parent = frame
 
 --------------------------------------------------
--- TOGGLE SLIDER
+-- ACCEPT TOGGLE
 --------------------------------------------------
 
-local toggleFrame = Instance.new("Frame")
-toggleFrame.Size = UDim2.new(0,60,0,25)
-toggleFrame.Position = UDim2.new(0.5,-30,1,-35)
-toggleFrame.BackgroundColor3 = Color3.fromRGB(80,80,80)
-toggleFrame.Parent = frame
+local acceptToggleFrame = Instance.new("Frame")
+acceptToggleFrame.Size = UDim2.new(0,50,0,25)
+acceptToggleFrame.Position = UDim2.new(1,-60,0,90)
+acceptToggleFrame.BackgroundColor3 = Color3.fromRGB(80,80,80)
+acceptToggleFrame.Parent = frame
 
-local toggleButton = Instance.new("TextButton")
-toggleButton.Size = UDim2.new(0,25,0,25)
-toggleButton.Position = UDim2.new(0,0,0,0)
-toggleButton.Text = ""
-toggleButton.BackgroundColor3 = Color3.fromRGB(200,200,200)
-toggleButton.Parent = toggleFrame
+local acceptCorner = Instance.new("UICorner")
+acceptCorner.CornerRadius = UDim.new(1,0)
+acceptCorner.Parent = acceptToggleFrame
 
---------------------------------------------------
--- NOTIFICATION
---------------------------------------------------
+local acceptToggle = Instance.new("TextButton")
+acceptToggle.Size = UDim2.new(0,23,0,23)
+acceptToggle.Position = UDim2.new(0,1,0,1)
+acceptToggle.Text = ""
+acceptToggle.BackgroundColor3 = Color3.fromRGB(220,220,220)
+acceptToggle.Parent = acceptToggleFrame
 
-local notif = Instance.new("TextLabel")
-notif.Size = UDim2.new(0,250,0,40)
-notif.Position = UDim2.new(1,-260,1,-60)
-notif.BackgroundColor3 = Color3.fromRGB(25,25,25)
-notif.TextColor3 = Color3.new(1,1,1)
-notif.Text = ""
-notif.Visible = false
-notif.Parent = gui
+local acceptToggleCorner = Instance.new("UICorner")
+acceptToggleCorner.CornerRadius = UDim.new(1,0)
+acceptToggleCorner.Parent = acceptToggle
 
 --------------------------------------------------
--- LOGIC
+-- NOTIFICATION FUNCTION
 --------------------------------------------------
 
-local toggleOn = false
-local lastAction = ""
+local function spamNotification(text)
 
-local function updateNotif()
-	if toggleOn and lastAction ~= "" then
-		notif.Visible = true
-		notif.Text = lastAction .. " is ACTIVE"
-	else
-		notif.Visible = false
-	end
+	task.spawn(function()
+
+		while true do
+
+			local notif = Instance.new("TextLabel")
+			notif.Size = UDim2.new(0,240,0,35)
+			notif.Position = UDim2.new(1,-250,1,-60)
+			notif.BackgroundColor3 = Color3.fromRGB(20,20,20)
+			notif.TextColor3 = Color3.new(1,1,1)
+			notif.Text = text
+			notif.Parent = gui
+
+			local corner = Instance.new("UICorner")
+			corner.CornerRadius = UDim.new(0,6)
+			corner.Parent = notif
+
+			task.wait(1)
+
+		end
+
+	end)
+
 end
 
 --------------------------------------------------
--- TOGGLE SWITCH
+-- TOGGLE STATES
 --------------------------------------------------
 
-toggleButton.MouseButton1Click:Connect(function()
+local freezeOn = false
+local acceptOn = false
 
-	toggleOn = not toggleOn
+--------------------------------------------------
+-- FREEZE TOGGLE LOGIC
+--------------------------------------------------
 
-	if toggleOn then
-		toggleButton.Position = UDim2.new(1,-25,0,0)
-		toggleFrame.BackgroundColor3 = Color3.fromRGB(0,170,0)
+freezeToggle.MouseButton1Click:Connect(function()
+
+	freezeOn = not freezeOn
+
+	if freezeOn then
+		freezeToggle.Position = UDim2.new(1,-24,0,1)
+		freezeToggleFrame.BackgroundColor3 = Color3.fromRGB(0,170,0)
+		spamNotification("Trade Freeze ✅")
 	else
-		toggleButton.Position = UDim2.new(0,0,0,0)
-		toggleFrame.BackgroundColor3 = Color3.fromRGB(80,80,80)
+		freezeToggle.Position = UDim2.new(0,1,0,1)
+		freezeToggleFrame.BackgroundColor3 = Color3.fromRGB(80,80,80)
 	end
 
-	updateNotif()
 end)
 
 --------------------------------------------------
--- BUTTONS
+-- ACCEPT TOGGLE LOGIC
 --------------------------------------------------
 
-freezeButton.MouseButton1Click:Connect(function()
-	lastAction = "Trade Freeze ✅"
-	updateNotif()
+acceptToggle.MouseButton1Click:Connect(function()
+
+	acceptOn = not acceptOn
+
+	if acceptOn then
+		acceptToggle.Position = UDim2.new(1,-24,0,1)
+		acceptToggleFrame.BackgroundColor3 = Color3.fromRGB(0,170,0)
+		spamNotification("Auto Accept ✅")
+	else
+		acceptToggle.Position = UDim2.new(0,1,0,1)
+		acceptToggleFrame.BackgroundColor3 = Color3.fromRGB(80,80,80)
+	end
+
 end)
 
-acceptButton.MouseButton1Click:Connect(function()
-	lastAction = "Auto Accept ✅"
-	updateNotif()
+--------------------------------------------------
+-- DRAGGABLE GUI
+--------------------------------------------------
+
+local dragging = false
+local dragInput
+local dragStart
+local startPos
+
+local function update(input)
+	local delta = input.Position - dragStart
+	frame.Position = UDim2.new(
+		startPos.X.Scale,
+		startPos.X.Offset + delta.X,
+		startPos.Y.Scale,
+		startPos.Y.Offset + delta.Y
+	)
+end
+
+frame.InputBegan:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 then
+		dragging = true
+		dragStart = input.Position
+		startPos = frame.Position
+
+		input.Changed:Connect(function()
+			if input.UserInputState == Enum.UserInputState.End then
+				dragging = false
+			end
+		end)
+	end
+end)
+
+frame.InputChanged:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseMovement then
+		dragInput = input
+	end
+end)
+
+UserInputService.InputChanged:Connect(function(input)
+	if input == dragInput and dragging then
+		update(input)
+	end
 end)
