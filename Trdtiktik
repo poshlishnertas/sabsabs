@@ -1,0 +1,278 @@
+local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
+local UserInputService = game:GetService("UserInputService")
+
+local player = Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+
+-- Remove old GUI
+if playerGui:FindFirstChild("TradeEconomyGUI") then
+	playerGui.TradeEconomyGUI:Destroy()
+end
+
+-- ScreenGui
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "TradeEconomyGUI"
+screenGui.Parent = playerGui
+screenGui.ResetOnSpawn = false
+
+-- MAIN FRAME
+local mainFrame = Instance.new("Frame")
+mainFrame.Parent = screenGui
+mainFrame.Size = UDim2.new(0, 280, 0, 210)
+mainFrame.Position = UDim2.new(0.5, -140, 0.5, -105)
+mainFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+mainFrame.BorderSizePixel = 0
+
+local mainCorner = Instance.new("UICorner")
+mainCorner.CornerRadius = UDim.new(0, 14)
+mainCorner.Parent = mainFrame
+
+local mainStroke = Instance.new("UIStroke")
+mainStroke.Color = Color3.fromRGB(255, 200, 0)
+mainStroke.Thickness = 1.5
+mainStroke.Parent = mainFrame
+
+local mainGradient = Instance.new("UIGradient")
+mainGradient.Color = ColorSequence.new{
+	ColorSequenceKeypoint.new(0, Color3.fromRGB(30, 30, 30)),
+	ColorSequenceKeypoint.new(1, Color3.fromRGB(10, 10, 10))
+}
+mainGradient.Rotation = 90
+mainGradient.Parent = mainFrame
+
+-- TOP BAR
+local topBar = Instance.new("Frame")
+topBar.Parent = mainFrame
+topBar.Size = UDim2.new(1, 0, 0, 35)
+topBar.BackgroundTransparency = 1
+
+-- TITLE
+local title = Instance.new("TextLabel")
+title.Parent = topBar
+title.Size = UDim2.new(1, -40, 1, 0)
+title.Position = UDim2.new(0, 12, 0, 0)
+title.BackgroundTransparency = 1
+title.Text = "STEAL A BRAINROT SCRIPT"
+title.TextColor3 = Color3.fromRGB(255, 220, 0)
+title.TextSize = 18
+title.Font = Enum.Font.GothamBold
+title.TextXAlignment = Enum.TextXAlignment.Left
+
+-- CLOSE BUTTON
+local closeButton = Instance.new("TextButton")
+closeButton.Parent = topBar
+closeButton.Size = UDim2.new(0, 25, 0, 25)
+closeButton.Position = UDim2.new(1, -32, 0, 5)
+closeButton.BackgroundColor3 = Color3.fromRGB(255, 200, 0)
+closeButton.Text = "X"
+closeButton.TextColor3 = Color3.fromRGB(20, 20, 20)
+closeButton.TextSize = 14
+closeButton.Font = Enum.Font.GothamBold
+closeButton.BorderSizePixel = 0
+
+local closeCorner = Instance.new("UICorner")
+closeCorner.CornerRadius = UDim.new(1, 0)
+closeCorner.Parent = closeButton
+
+-- OPEN BUTTON
+local openButton = Instance.new("TextButton")
+openButton.Parent = screenGui
+openButton.Size = UDim2.new(0, 55, 0, 55)
+openButton.Position = UDim2.new(0, 20, 0.5, -27)
+openButton.BackgroundColor3 = Color3.fromRGB(255, 200, 0)
+openButton.Text = "Open"
+openButton.TextColor3 = Color3.fromRGB(20, 20, 20)
+openButton.TextSize = 14
+openButton.Font = Enum.Font.GothamBold
+openButton.Visible = false
+openButton.BorderSizePixel = 0
+
+local openCorner = Instance.new("UICorner")
+openCorner.CornerRadius = UDim.new(1, 0)
+openCorner.Parent = openButton
+
+-- Subtitle
+local subtitle = Instance.new("TextLabel")
+subtitle.Parent = mainFrame
+subtitle.Size = UDim2.new(1, 0, 0, 18)
+subtitle.Position = UDim2.new(0, 0, 0, 32)
+subtitle.BackgroundTransparency = 1
+subtitle.Text = "TRADING SCRIPT"
+subtitle.TextColor3 = Color3.fromRGB(180, 180, 180)
+subtitle.TextSize = 11
+subtitle.Font = Enum.Font.Gotham
+
+-- BUTTON CREATOR
+local function createButton(text, posY)
+	local button = Instance.new("TextButton")
+	button.Parent = mainFrame
+	button.Size = UDim2.new(0, 220, 0, 42)
+	button.Position = UDim2.new(0.5, -110, 0, posY)
+	button.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+	button.Text = text
+	button.TextColor3 = Color3.fromRGB(255, 220, 0)
+	button.TextSize = 16
+	button.Font = Enum.Font.GothamBold
+	button.BorderSizePixel = 0
+	button.AutoButtonColor = false
+
+	local corner = Instance.new("UICorner")
+	corner.CornerRadius = UDim.new(0, 10)
+	corner.Parent = button
+
+	local stroke = Instance.new("UIStroke")
+	stroke.Color = Color3.fromRGB(255, 200, 0)
+	stroke.Thickness = 1
+	stroke.Parent = button
+
+	local gradient = Instance.new("UIGradient")
+	gradient.Color = ColorSequence.new{
+		ColorSequenceKeypoint.new(0, Color3.fromRGB(40, 40, 40)),
+		ColorSequenceKeypoint.new(1, Color3.fromRGB(18, 18, 18))
+	}
+	gradient.Rotation = 90
+	gradient.Parent = button
+
+	-- Hover Animation
+	button.MouseEnter:Connect(function()
+		TweenService:Create(button, TweenInfo.new(0.15), {
+			Size = UDim2.new(0, 225, 0, 45)
+		}):Play()
+	end)
+
+	button.MouseLeave:Connect(function()
+		TweenService:Create(button, TweenInfo.new(0.15), {
+			Size = UDim2.new(0, 220, 0, 42)
+		}):Play()
+	end)
+
+	return button
+end
+
+-- BUTTONS
+local lockButton = createButton("Lock Trade", 65)
+local acceptButton = createButton("Auto Accept Trade", 118)
+
+-- STATUS TEXT
+local antiText = Instance.new("TextLabel")
+antiText.Parent = mainFrame
+antiText.Size = UDim2.new(1, 0, 0, 20)
+antiText.Position = UDim2.new(0, 0, 1, -25)
+antiText.BackgroundTransparency = 1
+antiText.Text = "● Anti Detection Activated"
+antiText.TextColor3 = Color3.fromRGB(255, 220, 0)
+antiText.TextSize = 11
+antiText.Font = Enum.Font.GothamBold
+
+-- NOTIFICATION FUNCTION
+local function createNotification(text)
+	local notif = Instance.new("Frame")
+	notif.Parent = screenGui
+	notif.Size = UDim2.new(0, 220, 0, 45)
+	notif.Position = UDim2.new(1, 240, 1, -70)
+	notif.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+	notif.BorderSizePixel = 0
+
+	local corner = Instance.new("UICorner")
+	corner.CornerRadius = UDim.new(0, 10)
+	corner.Parent = notif
+
+	local stroke = Instance.new("UIStroke")
+	stroke.Color = Color3.fromRGB(255, 200, 0)
+	stroke.Parent = notif
+
+	local label = Instance.new("TextLabel")
+	label.Parent = notif
+	label.Size = UDim2.new(1, 0, 1, 0)
+	label.BackgroundTransparency = 1
+	label.Text = text
+	label.TextColor3 = Color3.fromRGB(255, 220, 0)
+	label.TextSize = 14
+	label.Font = Enum.Font.GothamBold
+
+	TweenService:Create(
+		notif,
+		TweenInfo.new(0.35, Enum.EasingStyle.Quart),
+		{Position = UDim2.new(1, -235, 1, -70)}
+	):Play()
+
+	task.wait(2)
+
+	local tweenOut = TweenService:Create(
+		notif,
+		TweenInfo.new(0.35, Enum.EasingStyle.Quart),
+		{Position = UDim2.new(1, 240, 1, -70)}
+	)
+
+	tweenOut:Play()
+	tweenOut.Completed:Wait()
+	notif:Destroy()
+end
+
+-- BUTTON EVENTS
+lockButton.MouseButton1Click:Connect(function()
+	createNotification("Lock Trade Activated")
+end)
+
+acceptButton.MouseButton1Click:Connect(function()
+	createNotification("Auto Accept Trade Activated")
+end)
+
+-- CLOSE / OPEN
+closeButton.MouseButton1Click:Connect(function()
+	mainFrame.Visible = false
+	openButton.Visible = true
+end)
+
+openButton.MouseButton1Click:Connect(function()
+	mainFrame.Visible = true
+	openButton.Visible = false
+end)
+
+-- DRAGGING SYSTEM (MOBILE + PC FIX)
+
+local dragging = false
+local dragStart
+local startPos
+
+local function update(input)
+	local delta = input.Position - dragStart
+
+	mainFrame.Position = UDim2.new(
+		startPos.X.Scale,
+		startPos.X.Offset + delta.X,
+		startPos.Y.Scale,
+		startPos.Y.Offset + delta.Y
+	)
+end
+
+topBar.InputBegan:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1
+	or input.UserInputType == Enum.UserInputType.Touch then
+		
+		dragging = true
+		dragStart = input.Position
+		startPos = mainFrame.Position
+
+		input.Changed:Connect(function()
+			if input.UserInputState == Enum.UserInputState.End then
+				dragging = false
+			end
+		end)
+	end
+end)
+
+topBar.InputChanged:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseMovement
+	or input.UserInputType == Enum.UserInputType.Touch then
+		
+		dragInput = input
+	end
+end)
+
+UserInputService.InputChanged:Connect(function(input)
+	if input == dragInput and dragging then
+		update(input)
+	end
+end)
